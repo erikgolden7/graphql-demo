@@ -1,0 +1,49 @@
+const {GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList} = require('graphql')
+const axios = require('axios')
+
+let users = require(`${__dirname}/model`)
+
+const PersonType = new GraphQLObjectType({
+  name: 'Person',
+  fields() {
+    return {
+      id: {
+        type: GrapQLInt,
+        resolve(person) {
+          return person.id
+        }
+      },
+      name: {
+        type: GraphQLString,
+        resolve(person) {
+          return person.name
+        }
+      },
+      height: {
+        type: GraphQLInt,
+        resolve(person) {
+          return person.height
+        }
+      }
+    }
+  }
+})
+
+const Query = new GraphQLObjectType({
+  name: 'Query',
+  fields() {
+    return {
+      people: {
+        type: new GraphQLList(PersonType),
+        // you might see root as "_", ex: resolve(_, args)
+        resolve(root, args) {
+          return users
+        }
+      }
+    }
+  }
+})
+
+module.exports = new GraphQLSchema({
+  query: Query
+})
