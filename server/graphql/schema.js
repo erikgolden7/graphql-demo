@@ -1,4 +1,4 @@
-const {GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList} = require('graphql')
+const {GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLInt, GraphQLList, GraphQLNonNull} = require('graphql')
 const axios = require('axios')
 
 let users = require(`${__dirname}/model`)
@@ -8,7 +8,7 @@ const PersonType = new GraphQLObjectType({
   fields() {
     return {
       id: {
-        type: GrapQLInt,
+        type: GraphQLNonNull(GraphQLInt),
         resolve(person) {
           return person.id
         }
@@ -34,7 +34,7 @@ const Query = new GraphQLObjectType({
   fields() {
     return {
       people: {
-        type: new GraphQLList(PersonType),
+        type: new GraphQLNonNull(GraphQLList(GraphQLNonNull(PersonType))),
         // you might see root as "_", ex: resolve(_, args)
         resolve(root, args) {
           return users
